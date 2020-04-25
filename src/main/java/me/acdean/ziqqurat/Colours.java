@@ -1,6 +1,6 @@
 package me.acdean.ziqqurat;
 
-import processing.core.PApplet;
+import static processing.core.PApplet.println;
 import processing.core.PConstants;
 
 /*
@@ -19,7 +19,7 @@ public class Colours {
     }
 
     void init() {
-        PApplet.println("Colours");
+        println("Colours");
         p.colorMode(PConstants.HSB, COLOURS, COLOURS, COLOURS);
         colours = new int[COLOURS];
         for (int i = 0; i < COLOURS; i++) {
@@ -27,7 +27,7 @@ public class Colours {
             int r = (int)p.red(c);
             int g = (int)p.green(c);
             int b = (int)p.blue(c);
-            PApplet.println("Colours", i, r, g, b);
+            println("Colours", i, r, g, b);
             colours[i] = 0xff << 24 | r << 16 | g << 8 | b;
         }
         p.colorMode(PConstants.RGB);

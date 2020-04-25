@@ -2,6 +2,7 @@ package me.acdean.ziqqurat;
 
 import java.util.ArrayList;
 import processing.core.PApplet;
+import static processing.core.PApplet.println;
 import processing.core.PConstants;
 import processing.core.PShape;
 
@@ -31,7 +32,7 @@ class Stars extends ArrayList<Stars.Star> {
                 add(p.floor.toX(x), p.floor.toY(y), p.floor.toZ(x, y));
             }
         }
-        PApplet.println("Stars: ", size());
+        println("Stars: ", size());
     }
 
     void add(int x, int y, int z) {
@@ -50,7 +51,7 @@ class Stars extends ArrayList<Stars.Star> {
         int count;
 
         Star(int x, int y, int z) {
-            PApplet.println("star", x, y, z);
+            println("star", x, y, z);
             this.x = x;
             this.y = y;
             this.z = z;

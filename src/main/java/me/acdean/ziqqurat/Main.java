@@ -29,7 +29,7 @@ public class Main extends PApplet {
     public void settings() {
         //fullScreen(P3D);
         size(1600, 800, P3D);
-        PApplet.println("Size", width, height);
+        println("Size", width, height);
         colours = new Colours(this);
     }
 
