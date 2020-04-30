@@ -1,8 +1,9 @@
 package me.acdean.ziqqurat;
 
 import java.util.ArrayList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import processing.core.PApplet;
-import static processing.core.PApplet.println;
 import processing.core.PConstants;
 import processing.core.PShape;
 
@@ -11,6 +12,8 @@ import processing.core.PShape;
 */
 
 class Stars extends ArrayList<Stars.Star> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Stars.class);
 
     Main p;
     PShape starShape;
@@ -25,14 +28,14 @@ class Stars extends ArrayList<Stars.Star> {
     void init() {
         // add some stars
         for (int i = 0 ; i < 100 ; i++) {
-            int x = (int)p.random(0, 10);
-            int y = (int)p.random(0, 10);
+            int x = (int)p.random(0, p.floor.count);
+            int y = (int)p.random(0, p.floor.count);
             int z = p.floor.grid[x][y];
             if (z != 0) {
                 add(p.floor.toX(x), p.floor.toY(y), p.floor.toZ(x, y));
             }
         }
-        println("Stars: ", size());
+        LOG.debug("Stars: ", size());
     }
 
     void add(int x, int y, int z) {
@@ -51,7 +54,7 @@ class Stars extends ArrayList<Stars.Star> {
         int count;
 
         Star(int x, int y, int z) {
-            println("star", x, y, z);
+            LOG.debug("star", x, y, z);
             this.x = x;
             this.y = y;
             this.z = z;
@@ -76,7 +79,7 @@ class Stars extends ArrayList<Stars.Star> {
                 starShape.endShape(PConstants.CLOSE);
             }
             if (count >= 0) {
-                //PApplet.println("Star", x, y, z);
+                LOG.debug("Star {} {} {}", x, y, z);
                 p.pushMatrix();
                 p.translate(x, y, z + 20);
                 p.rotateZ(PApplet.radians(count * 5));

@@ -1,5 +1,8 @@
 package me.acdean.ziqqurat;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static processing.core.PApplet.constrain;
 import processing.core.PVector;
 
 /*
@@ -7,6 +10,8 @@ import processing.core.PVector;
 */
 
 public class Player {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Player.class);
 
     Main p;
     int direction = 0;
@@ -27,7 +32,7 @@ public class Player {
         p.pushMatrix();
         p.stroke(0, 255, 0);
         p.fill(0);
-        p.translate(position.x, position.y, position.z + 20);  // this is centred, so add height
+        p.translate(position.x * 10, position.y * 10, position.z + 20);  // this is centred, so add height
         p.box(10, 10, 20);
         p.popMatrix();
     }
@@ -39,11 +44,16 @@ public class Player {
     void anti() {
         direction = ((direction - 1) + 4) % 4;
     }
-    
+
     void forwards() {
-        int x1 = (int)(position.x + 10 * offset[direction].x);
-        int y1 = (int)(position.y + 10 * offset[direction].y);
-        position.x = x1;
-        position.y = y1;
+        int x1 = constrain((int)(position.x + 1 * offset[direction].x), 0, p.floor.count2);
+        int y1 = constrain((int)(position.y + 1 * offset[direction].y), 0, p.floor.count2);
+        int h = p.floor.heights[x1][y1];
+        if (h != 0) {
+            position.x = x1;
+            position.y = y1;
+            position.z = h * Floor.STEP_SIZE;
+            LOG.debug("Player {} {} {}", position.x, position.y, position.z);
+        }
     }
 }

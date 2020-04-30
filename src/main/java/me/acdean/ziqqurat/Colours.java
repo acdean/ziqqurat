@@ -1,6 +1,7 @@
 package me.acdean.ziqqurat;
 
-import static processing.core.PApplet.println;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import processing.core.PConstants;
 
 /*
@@ -8,6 +9,8 @@ import processing.core.PConstants;
 */
 
 public class Colours {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Colours.class);
 
     private static final int COLOURS = 255;
 
@@ -19,7 +22,7 @@ public class Colours {
     }
 
     void init() {
-        println("Colours");
+        LOG.debug("Colours");
         p.colorMode(PConstants.HSB, COLOURS, COLOURS, COLOURS);
         colours = new int[COLOURS];
         for (int i = 0; i < COLOURS; i++) {
@@ -27,7 +30,7 @@ public class Colours {
             int r = (int)p.red(c);
             int g = (int)p.green(c);
             int b = (int)p.blue(c);
-            println("Colours", i, r, g, b);
+            LOG.debug("Colours {} {} {} {}", i, r, g, b);
             colours[i] = 0xff << 24 | r << 16 | g << 8 | b;
         }
         p.colorMode(PConstants.RGB);
