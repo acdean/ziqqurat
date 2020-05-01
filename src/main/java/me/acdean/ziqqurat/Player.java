@@ -1,5 +1,6 @@
 package me.acdean.ziqqurat;
 
+import static me.acdean.ziqqurat.Main.SIZE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static processing.core.PApplet.constrain;
@@ -32,8 +33,8 @@ public class Player {
         p.pushMatrix();
         p.stroke(0, 255, 0);
         p.fill(0);
-        p.translate(position.x * 10, position.y * 10, position.z + 20);  // this is centred, so add height
-        p.box(10, 10, 20);
+        p.translate(position.x * SIZE, position.y * SIZE, position.z + SIZE + (SIZE / 2));  // this is centred, so add height
+        p.box(SIZE, SIZE, SIZE * 2);
         p.popMatrix();
     }
 
@@ -52,7 +53,7 @@ public class Player {
         if (h != 0) {
             position.x = x1;
             position.y = y1;
-            position.z = h * Floor.STEP_SIZE;
+            position.z = h * SIZE;
             LOG.debug("Player {} {} {}", position.x, position.y, position.z);
         }
     }

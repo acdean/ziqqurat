@@ -18,12 +18,14 @@ import processing.opengl.PJOGL;
 public class Main extends PApplet {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+    public static final int SIZE = 10; // basic block size
 
     public PeasyCam cam;
     Baubles baubles = new Baubles(this);
     Stars stars;
     Floor floor;
     Player player;
+    Enemies enemies;
     Colours colours;
 
     public static void main(String[] args) {
@@ -45,7 +47,14 @@ public class Main extends PApplet {
         stars = new Stars(this);
         player = new Player(this);
         colours = new Colours(this);
+        enemies = new Enemies(this);
 
+        // add spikes, 4 per platform
+        for (int i = 0 ; i < floor.platforms * 4 ; i++) {
+            enemies.add(new Spike(this));
+        }
+
+        // add stars
         stars.init();
 
         // start looking at player
@@ -65,10 +74,11 @@ public class Main extends PApplet {
         line(0, 0, 0, 0, 0, 1000);
 
         pushMatrix();
-        translate((floor.platSize - 1) * Floor.STEP_SIZE / 2, (floor.platSize - 1) * Floor.STEP_SIZE / 2);
+        translate((floor.platSize - 1) * SIZE / 2, (floor.platSize - 1) * SIZE / 2);
         floor.draw();
         stars.draw();
         popMatrix();
+        enemies.draw();
         player.draw();
 
         // turn on additive blending, always fun

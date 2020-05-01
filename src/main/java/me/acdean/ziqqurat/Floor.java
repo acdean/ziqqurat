@@ -1,5 +1,6 @@
 package me.acdean.ziqqurat;
 
+import static me.acdean.ziqqurat.Main.SIZE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import processing.core.PVector;
@@ -26,7 +27,6 @@ public class Floor {
 
     public static final int MAX_SIZE = 200;                 // maximum size of heightmap
     public static final int STEPS = 5;                      // 5 steps between platforms
-    public static final int STEP_SIZE = 10;                 // basic block size
 
     // platforms physical size is STEP_SIZE * plat_size
     // the random platform size determines the nnumber of platforms in the grid
@@ -40,6 +40,7 @@ public class Floor {
     int[][] heights;// this is for the character positions
     int colour;
     int seed;
+    int platforms;
 
     Floor(Main p) {
         this.p = p;
@@ -48,19 +49,10 @@ public class Floor {
         p.randomSeed(seed);
         p.noiseSeed(seed);
 
-        // 1 - 19
-        // 2 - 19
-        // 3 - 19
-        // 4 - 19
-        // 5 - 19
-        // 6 - 19
-        // 7 - 19
-        // 8 - 19
-        
         // platform size
         p.random(100);
         platSize = 1 + 2 * (int)p.random(2, 12);   // random odd number 5 - 25
-        size = platSize * STEP_SIZE;   // dimensions for the platform
+        size = platSize * SIZE;   // dimensions for the platform
         // we want the overall size to be about 256x256 
         count = MAX_SIZE / platSize;
         grid = new int[count][count];
@@ -101,6 +93,7 @@ public class Floor {
         for (int y = 0; y < count; y++) {
             for (int x = 0; x < count; x++) {
                 if (grid[x][y] != 0) {
+                    platforms++;    // total number of platforms
                     grid[x][y] = (int)(15 * p.noise(x * .06f, y * .05f));
                     print(grid[x][y] % 10);
                 } else {
@@ -109,6 +102,7 @@ public class Floor {
             }
             println("");
         }
+        LOG.info("Platofmrs {}", platforms);
 
         // normalise the grid
         int min = 999;
@@ -146,7 +140,7 @@ public class Floor {
 
     void draw() {
         p.fill(0);
-        p.strokeWeight(3);
+        //p.strokeWeight(1);
         p.stroke(colour);
         for (int y = 0 ; y < count ; y++) {
             for (int x = 0 ; x < count ; x++) {
@@ -166,7 +160,7 @@ public class Floor {
             LOG.debug("platform {} {} {}", x, y, sz);
         }
         p.translate(sx, sy, sz);
-        p.box(size, size, STEP_SIZE);
+        p.box(size, size, SIZE);
         if (y < count - 1) {
             drawSteps(x, y, false);
         }
@@ -185,9 +179,9 @@ public class Floor {
             if (ez == 0) {
                 return;
             }
-            w = STEP_SIZE;      // shape of steps
-            h = STEPS * STEP_SIZE;
-            xinc = STEP_SIZE;   // difference between steps
+            w = SIZE;      // shape of steps
+            h = STEPS * SIZE;
+            xinc = SIZE;   // difference between steps
             yinc = 0;
             tx = (int)(xinc * ((platSize - 1) / 2));  // initial translation
             ty = 0;
@@ -196,10 +190,10 @@ public class Floor {
             if (ez == 0) {
                 return;
             }
-            w = STEPS * STEP_SIZE;
-            h = STEP_SIZE;
+            w = STEPS * SIZE;
+            h = SIZE;
             xinc = 0;
-            yinc = STEP_SIZE;
+            yinc = SIZE;
             tx = 0;
             ty = (int)(yinc * ((platSize - 1) / 2));
         }
@@ -208,11 +202,11 @@ public class Floor {
             return;
         }
         p.pushMatrix();
-        zinc = STEP_SIZE * (ez - sz);
+        zinc = SIZE * (ez - sz);
         if (sz == ez) {
             // flat platform
             p.translate(xinc * (platSize + STEPS) / 2, yinc * (platSize + STEPS) / 2);  // hacky
-            p.box(STEPS * STEP_SIZE, STEPS * STEP_SIZE, STEP_SIZE);
+            p.box(STEPS * SIZE, STEPS * SIZE, SIZE);
         } else {
             p.translate(tx, ty, 0);
             // steps
@@ -222,22 +216,22 @@ public class Floor {
                 py += yinc;
                 sz += zinc;
                 p.translate(xinc, yinc, zinc);
-                p.box(w, h, STEP_SIZE);
+                p.box(w, h, SIZE);
             }
         }
         p.popMatrix();
     }
 
     final int toX(int x) {
-        return x * (size + (STEPS * STEP_SIZE));
+        return x * (size + (STEPS * SIZE));
     }
 
     final int toY(int y) {
-        return y * (size + (STEPS * STEP_SIZE));
+        return y * (size + (STEPS * SIZE));
     }
 
     final int toZ(int x, int y) {
-        return grid[x][y] * (STEPS + 1) * STEP_SIZE;
+        return grid[x][y] * (STEPS + 1) * SIZE;
     }
 
     final PVector position(int x, int y, int z) {
