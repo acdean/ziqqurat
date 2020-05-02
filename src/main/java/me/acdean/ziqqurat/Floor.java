@@ -25,37 +25,35 @@ public class Floor {
 
     private static final Logger LOG = LoggerFactory.getLogger(Floor.class);
 
-    public static final int MAX_SIZE = 200;                 // maximum size of heightmap
+    public static final int MAX_SIZE = 100;                 // maximum size of heightmap
     public static final int STEPS = 5;                      // 5 steps between platforms
 
     // platforms physical size is STEP_SIZE * plat_size
     // the random platform size determines the nnumber of platforms in the grid
-    // ie there are more 5x5 platforms than 21x21 platforms
+    // ie there are more 7x7 platforms than 15x15 platforms
     Main p;
     int platSize;   // size of the platforms
     int count;      // number of platforms in grid
     int size;       // physical size of the platform
-    int[][] grid;   // this is for the platforms (depends on random count)
+    int[][] platform;   // this is for the platforms (depends on random count)
     int count2;     // height grid size in character positions
     int[][] heights;// this is for the character positions
     int colour;
-    int seed;
     int platforms;
 
-    Floor(Main p) {
+    Floor(Main p, int seed) {
         this.p = p;
-        seed = (int)p.random(10);
         LOG.debug("Seed: {}", seed);
         p.randomSeed(seed);
         p.noiseSeed(seed);
 
         // platform size
         p.random(100);
-        platSize = 1 + 2 * (int)p.random(2, 12);   // random odd number 5 - 25
+        platSize = 1 + 2 * (int)p.random(3, 8);   // random odd number 7 - 17
         size = platSize * SIZE;   // dimensions for the platform
         // we want the overall size to be about 256x256 
         count = MAX_SIZE / platSize;
-        grid = new int[count][count];
+        platform = new int[count][count];
         count2 = (count * platSize) + ((count - 1) * STEPS);
         heights = new int[count2][count2];
         LOG.debug("plat_size {} size {} count {} count2 {}", platSize, size, count, count2);
@@ -84,7 +82,7 @@ public class Floor {
                     }
                     ry = Main.constrain(ry + yinc, 0, count - 1);
                 }
-                grid[rx][ry] = 1;
+                platform[rx][ry] = 1;
             }
             LOG.debug("sum: {}", sum);
         }
@@ -92,41 +90,41 @@ public class Floor {
         // now heightmap the drawn cells
         for (int y = 0; y < count; y++) {
             for (int x = 0; x < count; x++) {
-                if (grid[x][y] != 0) {
+                if (platform[x][y] != 0) {
                     platforms++;    // total number of platforms
-                    grid[x][y] = (int)(15 * p.noise(x * .06f, y * .05f));
-                    print(grid[x][y] % 10);
+                    platform[x][y] = (int)(15 * p.noise(x * .06f, y * .05f));
+                    print(platform[x][y] % 10);
                 } else {
                     print("-");
                 }
             }
             println("");
         }
-        LOG.info("Platofmrs {}", platforms);
+        LOG.info("Platforms {}", platforms);
 
         // normalise the grid
         int min = 999;
         for (int y = 0; y < count; y++) {
             for (int x = 0; x < count; x++) {
-                if (grid[x][y] != 0 && grid[x][y] < min) {
-                    min = grid[x][y];
+                if (platform[x][y] != 0 && platform[x][y] < min) {
+                    min = platform[x][y];
                 }
             }
         }
         for (int y = 0; y < count; y++) {
             for (int x = 0; x < count; x++) {
-                if (grid[x][y] != 0) {
-                    grid[x][y] -= (min - 1);    // platform grid
+                if (platform[x][y] != 0) {
+                    platform[x][y] -= (min - 1);    // platform grid
                     // debug
                     int sx = toX(x);
                     int sy = toY(y);
                     int sz = toZ(x, y);
-                    LOG.debug("Normalised x {} y {} z {} s {} {} {}", x, y, grid[x][y], sx, sy, sz);
+                    LOG.debug("Normalised x {} y {} z {} s {} {} {}", x, y, platform[x][y], sx, sy, sz);
                 }
             }
         }
 
-        heights = generateHeightMap(grid, platSize);
+        heights = generateHeightMap(platform, platSize);
 
         int r = (int)(p.random(64, 256));
         int g = (int)(p.random(64, 256));
@@ -136,7 +134,7 @@ public class Floor {
     }
 
     // TODO use grid[][] and platSize to generate geometry as a single PShape
-    // TODO use grid[][] and platSize to generate height map - generateHeightMap()
+    // TODO use grid[][] and platSize to generate height map - generateHeightMap() (done)
 
     void draw() {
         p.fill(0);
@@ -144,7 +142,7 @@ public class Floor {
         p.stroke(colour);
         for (int y = 0 ; y < count ; y++) {
             for (int x = 0 ; x < count ; x++) {
-                if (grid[x][y] != 0) {
+                if (platform[x][y] != 0) {
                     drawPlatform(x, y);
                 }
             }
@@ -172,10 +170,10 @@ public class Floor {
 
     // direction = true => x increases
     void drawSteps(int px, int py, boolean direction) {
-        int sz = grid[px][py];    // start z
+        int sz = platform[px][py];    // start z
         int ez, w, h, xinc, yinc, zinc, tx, ty;
         if (direction) {
-            ez = grid[px + 1][py];  // end z
+            ez = platform[px + 1][py];  // end z
             if (ez == 0) {
                 return;
             }
@@ -186,7 +184,7 @@ public class Floor {
             tx = (int)(xinc * ((platSize - 1) / 2));  // initial translation
             ty = 0;
         } else {
-            ez = grid[px][py + 1];
+            ez = platform[px][py + 1];
             if (ez == 0) {
                 return;
             }
@@ -231,7 +229,7 @@ public class Floor {
     }
 
     final int toZ(int x, int y) {
-        return grid[x][y] * (STEPS + 1) * SIZE;
+        return platform[x][y] * (STEPS + 1) * SIZE;
     }
 
     final PVector position(int x, int y, int z) {

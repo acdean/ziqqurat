@@ -46,6 +46,7 @@ public class Player {
         direction = ((direction - 1) + 4) % 4;
     }
 
+    // TODO if step on a SPIKE (heights = -1) then die
     void forwards() {
         int x1 = constrain((int)(position.x + 1 * offset[direction].x), 0, p.floor.count2);
         int y1 = constrain((int)(position.y + 1 * offset[direction].y), 0, p.floor.count2);
@@ -54,7 +55,7 @@ public class Player {
             position.x = x1;
             position.y = y1;
             position.z = h * SIZE;
-            LOG.debug("Player {} {} {}", position.x, position.y, position.z);
+            LOG.info("Player {} {} {}", position.x, position.y, position.z);
         }
     }
 }

@@ -11,6 +11,7 @@ import processing.core.PShape;
 */
 public class Spike extends Enemy {
 
+    private static final int SPIKE = -2;
     Main p;
     static PShape shape;
     private static final Logger LOG = LoggerFactory.getLogger(Spike.class);
@@ -32,16 +33,18 @@ public class Spike extends Enemy {
             shape.vertex(-SIZE / 2, -SIZE / 2, 0);
             shape.endShape();
         }
-        // random position (on platform or stair, alligned to square)
+        // random position (on platform or stair, aligned to square)
         int cx, cy;
         do {
             cx = (int)p.random(p.floor.count2);
             cy = (int)p.random(p.floor.count2);
             LOG.info("random {} {} {}", cx, cy, p.floor.heights[cx][cy]);
-        } while (p.floor.heights[cx][cy] == 0);
+        } while (p.floor.heights[cx][cy] <= 0); // no spikes in space / on top of other stuff
         x = cx;
         y = cy;
         z = p.floor.heights[cx][cy];
+        // mark this square as a spike
+        p.floor.heights[cx][cy] = SPIKE;
     }
 
     @Override

@@ -13,6 +13,7 @@ import processing.core.PShape;
 
 class Stars extends ArrayList<Stars.Star> {
 
+    public static final int STAR = -1;
     private static final Logger LOG = LoggerFactory.getLogger(Stars.class);
 
     Main p;
@@ -26,16 +27,17 @@ class Stars extends ArrayList<Stars.Star> {
     // at start of stage, add a bunch of stars
     // requires a floor
     void init() {
-        // add some stars
-        for (int i = 0 ; i < 100 ; i++) {
-            int x = (int)p.random(0, p.floor.count);
-            int y = (int)p.random(0, p.floor.count);
-            int z = p.floor.grid[x][y];
-            if (z != 0) {
-                add(p.floor.toX(x), p.floor.toY(y), p.floor.toZ(x, y));
+        // a star in middle of each platform
+        for (int x = 0 ; x < p.floor.count ; x++) {
+            for (int y = 0 ; y < p.floor.count ; y++) {
+                int z = p.floor.platform[x][y];
+                if (z != 0) {
+                    add(p.floor.toX(x), p.floor.toY(y), p.floor.toZ(x, y));
+                    //p.floor.heights[x][y] = STAR;   // this is wrong, x and y are platform coords, need to be heights coords
+                }
             }
         }
-        LOG.debug("Stars: ", size());
+        LOG.info("Stars: ", size());
     }
 
     void add(int x, int y, int z) {

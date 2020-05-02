@@ -18,6 +18,12 @@ public class Enemies extends ArrayList<Enemy> {
         this.p = p;
     }
 
+    void move() {
+        for (Enemy e : this) {
+            e.move();
+        }
+    }
+
     void draw() {
         for (Enemy e : this) {
             e.draw();
