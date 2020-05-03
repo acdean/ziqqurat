@@ -1,16 +1,12 @@
 package me.acdean.ziqqurat;
 
-import peasy.PeasyCam;
-import processing.core.PVector;
-
+import com.jogamp.opengl.GL;        // additive blending only
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-// these are only used for additive blending
-import com.jogamp.opengl.GL;
+import peasy.PeasyCam;
 import processing.core.PApplet;
-import processing.core.PConstants;
-import processing.opengl.PJOGL;
+import processing.core.PVector;
+import processing.opengl.PJOGL;     // additive blending only
 
 /*
 ** Main replaces the processing sketch file.
@@ -19,7 +15,15 @@ import processing.opengl.PJOGL;
 public class Main extends PApplet {
 
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+
     public static final int SIZE = 10; // basic block size
+    private static final int DIST = 200;
+    public static PVector[] views = {
+        new PVector(DIST, DIST),
+        new PVector(DIST, -DIST),
+        new PVector(-DIST, -DIST),
+        new PVector(-DIST, DIST),
+    };
 
     public PeasyCam cam;
     Baubles baubles = new Baubles(this);
@@ -29,6 +33,8 @@ public class Main extends PApplet {
     Enemies enemies;
     Colours colours;
     boolean camera; // peaycam on / off - c to toggle
+    int view = 0;
+    boolean up = true;
 
     public static void main(String[] args) {
         PApplet.main("me.acdean.ziqqurat.Main");
@@ -88,9 +94,15 @@ public class Main extends PApplet {
             float y = player.position.y * SIZE;
             float z = player.position.z;    // this is already sized
             //LOG.info("Camera {} {} {} {} {} {} {} {} {}", x + 100, y + 100, z + 100, x, y, z, 0, 0, -1);
-            camera(x + dist, y + dist, z + dist / 2,
-                    x, y, z - dist / 2,
-                    0, 0, -1);
+            if (up) {
+                camera(x + views[view].x, y + views[view].y, z + dist / 2,
+                        x, y, z,
+                        0, 0, -1);
+            } else {
+                camera(x + views[view].x, y + views[view].y, z - dist / 2,
+                        x, y, z,
+                        0, 0, 1);
+            }
         }
 
         // axes
@@ -116,7 +128,6 @@ public class Main extends PApplet {
         popMatrix();
         enemies.draw();
         player.draw();
-
 
         // turn on additive blending, always fun
 //        additiveBlending();
@@ -147,6 +158,17 @@ public class Main extends PApplet {
 //        }
         if (key == 'c') {
             camera = !camera;
+        }
+        if (key == ';') {
+            view = (view + 1) % 4;
+        }
+        if (key == 'k') {
+            view = (view + 3) % 4;
+        }
+        if (key == 'l') {
+            up = !up;
+            // rotate view so it matches the old one
+            view = (view + 2) % 4;
         }
     }
 }

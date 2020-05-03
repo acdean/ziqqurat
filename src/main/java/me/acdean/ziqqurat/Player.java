@@ -31,10 +31,10 @@ public class Player {
 
     void draw() {
         p.pushMatrix();
-        p.stroke(0, 255, 0);
-        p.fill(0);
-        p.translate(position.x * SIZE, position.y * SIZE, position.z + SIZE + (SIZE / 2));  // this is centred, so add height
-        p.box(SIZE, SIZE, SIZE * 2);
+        p.stroke(0);
+        p.fill(0, 255, 0);
+        p.translate(position.x * SIZE, position.y * SIZE, position.z);
+        p.box(SIZE - 2, SIZE - 2, 5 * SIZE);    // pokes above and below, slightly small to avoid z-clash
         p.popMatrix();
     }
 
@@ -48,8 +48,8 @@ public class Player {
 
     // TODO if step on a SPIKE (heights = -1) then die
     void forwards() {
-        int x1 = constrain((int)(position.x + 1 * offset[direction].x), 0, p.floor.count2);
-        int y1 = constrain((int)(position.y + 1 * offset[direction].y), 0, p.floor.count2);
+        int x1 = constrain((int)(position.x + 1 * offset[direction].x), 0, p.floor.count2 - 1);
+        int y1 = constrain((int)(position.y + 1 * offset[direction].y), 0, p.floor.count2 - 1);
         int h = p.floor.heights[x1][y1];
         if (h != 0) {
             position.x = x1;
