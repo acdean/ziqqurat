@@ -49,7 +49,11 @@ public class Main extends PApplet {
 
     @Override
     public void setup() {
+        initAll();
+    }
 
+    // set / reset the screen
+    void initAll() {
         int seed = (int)random(10);
 
         frameRate(25);
@@ -70,7 +74,7 @@ public class Main extends PApplet {
         }
         if ((seed & 0x2) != 0) {
             for (int i = 0 ; i < floor.platforms * 2 ; i++) {
-                enemies.add(new Mutant(this));
+                enemies.add(new Circler(this));
             }
         }
 

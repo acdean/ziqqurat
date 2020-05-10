@@ -11,10 +11,12 @@ import processing.core.PShape;
 */
 public class Spike extends Enemy {
 
-    private static final int SPIKE = -2;
+    private static final Logger LOG = LoggerFactory.getLogger(Spike.class);
+    public  static final int SPIKE = -2;
+    private static final float H = 40; // spike height
+
     Main p;
     static PShape shape;
-    private static final Logger LOG = LoggerFactory.getLogger(Spike.class);
 
     // just a spike on a random platform
     Spike(Main main) {
@@ -25,7 +27,7 @@ public class Spike extends Enemy {
             shape.fill(0);
             shape.stroke(255, 0, 0);
             //shape.strokeWeight(2);
-            shape.vertex(0, 0, 40);
+            shape.vertex(0, 0, H);
             shape.vertex(-SIZE / 2, -SIZE / 2, 0);
             shape.vertex(-SIZE / 2, SIZE / 2, 0);
             shape.vertex(SIZE / 2, SIZE / 2, 0);

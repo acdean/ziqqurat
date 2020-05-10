@@ -23,6 +23,8 @@ public class Player {
         new PVector(-1, 0, 0),  // 2 x decreases    left
         new PVector(0, -1, 0)   // 3 y decreases    up
     };
+    boolean exploding;
+    int e = 1;
 
     Player(Main p) {
         this.p = p;
@@ -30,12 +32,27 @@ public class Player {
     }
 
     void draw() {
-        p.pushMatrix();
-        p.stroke(0);
-        p.fill(0, 255, 0);
-        p.translate(position.x * SIZE, position.y * SIZE, position.z);
-        p.box(SIZE - 2, SIZE - 2, 5 * SIZE);    // pokes above and below, slightly small to avoid z-clash
-        p.popMatrix();
+        if (exploding) {
+            p.pushMatrix();
+            p.noStroke();
+            p.fill(255, 255, 255);
+            p.translate(position.x * SIZE, position.y * SIZE, position.z);
+            p.sphere(e * SIZE); // akira...
+            p.popMatrix();
+            e++;
+            if (e == 25) {
+                // we are done - new screen
+                exploding = false;
+                p.initAll();
+            }
+        } else {
+            p.pushMatrix();
+            p.stroke(0);
+            p.fill(0, 255, 0);
+            p.translate(position.x * SIZE, position.y * SIZE, position.z);
+            p.box(SIZE - 2, SIZE - 2, 5 * SIZE);    // pokes above and below, slightly small to avoid z-clash
+            p.popMatrix();
+        }
     }
 
     void clockwise() {
@@ -46,16 +63,28 @@ public class Player {
         direction = ((direction - 1) + 4) % 4;
     }
 
-    // TODO if step on a SPIKE (heights = -1) then die
     void forwards() {
+        if (exploding) {
+            return;
+        }
         int x1 = constrain((int)(position.x + 1 * offset[direction].x), 0, p.floor.count2 - 1);
         int y1 = constrain((int)(position.y + 1 * offset[direction].y), 0, p.floor.count2 - 1);
         int h = p.floor.heights[x1][y1];
+        // spikes will kill you
+        if (h == Spike.SPIKE) {
+            explode();
+            return;
+        }
         if (h != 0) {
             position.x = x1;
             position.y = y1;
             position.z = h * SIZE;
             LOG.info("Player {} {} {}", position.x, position.y, position.z);
         }
+    }
+
+    void explode() {
+        exploding = true;
+        e = 0;
     }
 }

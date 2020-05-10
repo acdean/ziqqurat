@@ -40,6 +40,7 @@ public class Floor {
     int[][] heights;// this is for the character positions
     int colour;
     int platforms;
+    boolean debug = false;
 
     Floor(Main p, int seed) {
         this.p = p;
@@ -116,9 +117,9 @@ public class Floor {
                 if (platform[x][y] != 0) {
                     platform[x][y] -= (min - 1);    // platform grid
                     // debug
-                    int sx = toX(x);
-                    int sy = toY(y);
-                    int sz = toZ(x, y);
+                    int sx = toPixelX(x);
+                    int sy = toPixelY(y);
+                    int sz = toPixelZ(x, y);
                     LOG.debug("Normalised x {} y {} z {} s {} {} {}", x, y, platform[x][y], sx, sy, sz);
                 }
             }
@@ -151,9 +152,9 @@ public class Floor {
 
     void drawPlatform(int x, int y) {
         p.pushMatrix();
-        int sx = toX(x);
-        int sy = toY(y);
-        int sz = toZ(x, y);
+        int sx = toPixelX(x);
+        int sy = toPixelY(y);
+        int sz = toPixelZ(x, y);
         if (p.frameCount == 1) {
             LOG.debug("platform {} {} {}", x, y, sz);
         }
@@ -220,20 +221,20 @@ public class Floor {
         p.popMatrix();
     }
 
-    final int toX(int x) {
+    final int toPixelX(int x) {
         return x * (size + (STEPS * SIZE));
     }
 
-    final int toY(int y) {
+    final int toPixelY(int y) {
         return y * (size + (STEPS * SIZE));
     }
 
-    final int toZ(int x, int y) {
+    final int toPixelZ(int x, int y) {
         return platform[x][y] * (STEPS + 1) * SIZE;
     }
 
     final PVector position(int x, int y, int z) {
-        return new PVector(toX(x), toY(y), toZ(x, y));
+        return new PVector(toPixelX(x), toPixelY(y), toPixelZ(x, y));
     }
 
     // move to separate class?
@@ -307,16 +308,18 @@ public class Floor {
         }
 
         // debug ascii art height map
-        LOG.debug("Heights");
-        for (int y = 0; y < count2; y++) {
-            for (int x = 0; x < count2; x++) {
-                if (h[x][y] != 0) {
-                    print(h[x][y] % 10);
-                } else {
-                    print(".");
+        if (debug) {
+            LOG.debug("Heights");
+            for (int y = 0; y < count2; y++) {
+                for (int x = 0; x < count2; x++) {
+                    if (h[x][y] != 0) {
+                        print(h[x][y] % 10);
+                    } else {
+                        print(".");
+                    }
                 }
+                println();
             }
-            println();
         }
         return h;
     }

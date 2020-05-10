@@ -32,7 +32,7 @@ class Stars extends ArrayList<Stars.Star> {
             for (int y = 0 ; y < p.floor.count ; y++) {
                 int z = p.floor.platform[x][y];
                 if (z != 0) {
-                    add(p.floor.toX(x), p.floor.toY(y), p.floor.toZ(x, y));
+                    add(p.floor.toPixelX(x), p.floor.toPixelY(y), p.floor.toPixelZ(x, y));
                     //p.floor.heights[x][y] = STAR;   // this is wrong, x and y are platform coords, need to be heights coords
                 }
             }
