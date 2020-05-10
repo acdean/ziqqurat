@@ -117,8 +117,8 @@ public class Floor {
                 if (platform[x][y] != 0) {
                     platform[x][y] -= (min - 1);    // platform grid
                     // debug
-                    int sx = toPixelX(x);
-                    int sy = toPixelY(y);
+                    int sx = toPixels(x);
+                    int sy = toPixels(y);
                     int sz = toPixelZ(x, y);
                     LOG.debug("Normalised x {} y {} z {} s {} {} {}", x, y, platform[x][y], sx, sy, sz);
                 }
@@ -152,8 +152,8 @@ public class Floor {
 
     void drawPlatform(int x, int y) {
         p.pushMatrix();
-        int sx = toPixelX(x);
-        int sy = toPixelY(y);
+        int sx = toPixels(x);
+        int sy = toPixels(y);
         int sz = toPixelZ(x, y);
         if (p.frameCount == 1) {
             LOG.debug("platform {} {} {}", x, y, sz);
@@ -221,20 +221,23 @@ public class Floor {
         p.popMatrix();
     }
 
-    final int toPixelX(int x) {
-        return x * (size + (STEPS * SIZE));
-    }
-
-    final int toPixelY(int y) {
-        return y * (size + (STEPS * SIZE));
+    final int toPixels(int p) {
+        return p * (size + (STEPS * SIZE));
     }
 
     final int toPixelZ(int x, int y) {
         return platform[x][y] * (STEPS + 1) * SIZE;
     }
 
+    // returns pixel position of centre of platform
+    // and because they are square then can use the same method for x and y
+    final int toCentre(int p) {
+        return p * SIZE * (platSize + STEPS)
+            + (SIZE * ((platSize - 1) / 2));
+    }
+
     final PVector position(int x, int y, int z) {
-        return new PVector(toPixelX(x), toPixelY(y), toPixelZ(x, y));
+        return new PVector(toPixels(x), toPixels(y), toPixelZ(x, y));
     }
 
     // move to separate class?

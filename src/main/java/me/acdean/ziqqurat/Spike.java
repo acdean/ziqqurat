@@ -11,12 +11,13 @@ import processing.core.PShape;
 */
 public class Spike extends Enemy {
 
+    public  static final int SPIKE = -2;    // grid marker
+
     private static final Logger LOG = LoggerFactory.getLogger(Spike.class);
-    public  static final int SPIKE = -2;
     private static final float H = 40; // spike height
+    private static PShape shape;
 
     Main p;
-    static PShape shape;
 
     // just a spike on a random platform
     Spike(Main main) {

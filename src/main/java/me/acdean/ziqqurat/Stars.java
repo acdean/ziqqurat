@@ -13,15 +13,32 @@ import processing.core.PShape;
 
 class Stars extends ArrayList<Stars.Star> {
 
-    public static final int STAR = -1;
+    public static final int STAR = -1;  // grid marker
+
     private static final Logger LOG = LoggerFactory.getLogger(Stars.class);
+    private static PShape starShape;
 
     Main p;
-    PShape starShape;
 
     Stars(Main p) {
         super();
         this.p = p;
+        if (starShape == null) {
+            starShape = p.createShape();
+            starShape.beginShape();
+            starShape.noFill();
+            starShape.strokeWeight(2);
+            starShape.stroke(255);
+            for (int i = 0; i < 10; i++) {
+                float a = PConstants.TWO_PI * i / 10;
+                float r = 10.0f;
+                if ((i % 2) == 0) {
+                    r *= .34;
+                }
+                starShape.vertex(r * PApplet.sin(a), 0, -r * PApplet.cos(a));
+            }
+            starShape.endShape(PConstants.CLOSE);
+        }
     }
 
     // at start of stage, add a bunch of stars
@@ -32,7 +49,7 @@ class Stars extends ArrayList<Stars.Star> {
             for (int y = 0 ; y < p.floor.count ; y++) {
                 int z = p.floor.platform[x][y];
                 if (z != 0) {
-                    add(p.floor.toPixelX(x), p.floor.toPixelY(y), p.floor.toPixelZ(x, y));
+                    add(p.floor.toCentre(x), p.floor.toCentre(y), p.floor.toPixelZ(x, y));
                     //p.floor.heights[x][y] = STAR;   // this is wrong, x and y are platform coords, need to be heights coords
                 }
             }
@@ -64,22 +81,6 @@ class Stars extends ArrayList<Stars.Star> {
         }
 
         void draw() {
-            if (starShape == null) {
-                starShape = p.createShape();
-                starShape.beginShape();
-                starShape.noFill();
-                starShape.strokeWeight(2);
-                starShape.stroke(255);
-                for (int i = 0; i < 10; i++) {
-                    float a = PConstants.TWO_PI * i / 10;
-                    float r = 10.0f;
-                    if ((i % 2) == 0) {
-                        r *= .34;
-                    }
-                    starShape.vertex(r * PApplet.sin(a), 0, -r * PApplet.cos(a));
-                }
-                starShape.endShape(PConstants.CLOSE);
-            }
             if (count >= 0) {
                 LOG.debug("Star {} {} {}", x, y, z);
                 p.pushMatrix();

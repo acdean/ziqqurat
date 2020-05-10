@@ -75,7 +75,8 @@ public class Player {
             explode();
             return;
         }
-        if (h != 0) {
+        // can't move into square that is space OR a static enemy
+        if (h > 0) {
             position.x = x1;
             position.y = y1;
             position.z = h * SIZE;

@@ -7,16 +7,17 @@ import processing.core.PConstants;
 import processing.core.PShape;
 
 /*
-** Circler - just circles
+** Circler - just circles around
 */
+
 public class Circler extends Enemy {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Spike.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Circler.class);
     private static final float H = 30;  // height
     private static final int SIDES = 16; // number of sides
+    private static PShape shape;
 
     Main p;
-    static PShape shape;
     int ox, oy, oz; // location of origin
     float rad;          // radius
     float rot, delta;   // rotation angle and speed
@@ -56,7 +57,7 @@ public class Circler extends Enemy {
         }
         // circles around a star at random radius
         do {
-            // these are the char positions of a star, so centre of a platform
+            // choose a random platform
             ox = (int)p.random(p.floor.count);
             oy = (int)p.random(p.floor.count);
             oz = p.floor.platform[ox][oy];
@@ -64,8 +65,9 @@ public class Circler extends Enemy {
         } while (oz == 0);  // ignore non-platform space
         // translate to pixel space
         oz = p.floor.toPixelZ(ox, oy);
-        ox = p.floor.toPixelX(ox) + ((p.floor.platSize - 1) * SIZE / 2);
-        oy = p.floor.toPixelY(oy) + ((p.floor.platSize - 1) * SIZE / 2);
+        // centre of platform
+        ox = p.floor.toCentre(ox);
+        oy = p.floor.toCentre(oy);
 
         rad = (SIZE / 2) * p.random(4, p.floor.platSize); // ??? radius should be /2 but that's not enough
         delta = p.random(.01f, .02f);

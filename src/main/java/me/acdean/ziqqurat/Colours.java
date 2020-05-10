@@ -9,6 +9,11 @@ import processing.core.PConstants;
 */
 
 public class Colours {
+    public static final int BLACK = 0xff000000;
+    public static final int BLUE = 0xff0000ff;
+    public static final int FORCEFIELD_COLOUR = 0x80FF8080;   // transparent and pale
+    public static final int MAGENTA = 0xffff00ff;
+    public static final int RED = 0xffff0000;
 
     private static final Logger LOG = LoggerFactory.getLogger(Colours.class);
 

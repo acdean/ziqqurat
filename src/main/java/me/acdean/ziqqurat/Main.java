@@ -73,10 +73,15 @@ public class Main extends PApplet {
             }
         }
         if ((seed & 0x2) != 0) {
-            for (int i = 0 ; i < floor.platforms * 2 ; i++) {
-                enemies.add(new Circler(this));
+            for (int i = 0 ; i < floor.platforms ; i++) {
+                enemies.add(new ForceField(this));
             }
         }
+//        if ((seed & 0x2) != 0) {
+//            for (int i = 0 ; i < floor.platforms * 2 ; i++) {
+//                enemies.add(new Circler(this));
+//            }
+//        }
 
         // add stars
         stars.init();
@@ -126,10 +131,10 @@ public class Main extends PApplet {
         enemies.move();
 
         pushMatrix();
-        translate((floor.platSize - 1) * SIZE / 2, (floor.platSize - 1) * SIZE / 2);    // HACKY
+        translate((floor.platSize - 1) * SIZE / 2, (floor.platSize - 1) * SIZE / 2);    // EVEN MORE HACKY
         floor.draw();
-        stars.draw();
         popMatrix();
+        stars.draw();
         enemies.draw();
         player.draw();
 
@@ -151,28 +156,31 @@ public class Main extends PApplet {
             LOG.debug("Saving frame");
             saveFrame("ziqqurat_#####.png");
         }
-        if (key == '.') {
+        if (key == '.') {   // player rotate
             player.clockwise();
         }
-        if (key == ',') {
+        if (key == ',') {   // player rotate
             player.anti();
         }
 //        if (key == 'z') {
 //            player.forwards();
 //        }
-        if (key == 'c') {
+        if (key == 'c') {   // camera toggle
             camera = !camera;
         }
-        if (key == ';') {
+        if (key == ';') {   // view
             view = (view + 1) % 4;
         }
-        if (key == 'k') {
+        if (key == 'k') {   // vire
             view = (view + 3) % 4;
         }
-        if (key == 'l') {
+        if (key == 'l') {   // jump to underside
             up = !up;
             // rotate view so it matches the old one
             view = (view + 2) % 4;
+        }
+        if (key == 'r') {   // re-init
+            this.initAll();
         }
     }
 }
