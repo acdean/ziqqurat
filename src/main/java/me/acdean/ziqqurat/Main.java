@@ -180,6 +180,8 @@ public class Main extends PApplet {
             view = (view + 2) % 4;
         }
         if (key == 'r') {   // re-init
+            // need to reseed else we get stuck in loops
+            randomSeed(System.currentTimeMillis());
             this.initAll();
         }
     }
